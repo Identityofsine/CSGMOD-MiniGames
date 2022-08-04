@@ -2,7 +2,7 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 include("player_class/player.lua")
-
+include("team/team.lua")
 
 
 
@@ -24,14 +24,14 @@ end
 
 function GM:PlayerInitialSpawn(ply) -- When somebody first spawns
   print("Player "..ply:Name().." has spawned.")
-  ply:SetupTeam(1) -- sets the team
+  ply:SetupTeam(1) -- sets the team || change this to switch team...
   
 end
 
 
 
 function GM:PlayerSpawn(ply)
-  ply:ChatPrint(string.format("you are on team %d", ply:Team())) -- prints the current team the player is on
+  -- ply:ChatPrint(string.format("you are on team %s", teams[ply:Team()].name)) -- prints the current team the player is on
 end
 
 function GM:PlayerSelectSpawn(ply)

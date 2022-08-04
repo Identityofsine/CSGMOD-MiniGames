@@ -20,14 +20,16 @@ teams = { -- defined teams, definitely could use more stuff but this is good eno
 }
 
 
-function ply:SetupTeam( n ) -- TEAM SETUP
+
+function ply:SetupTeam( n,  --[[optional]]killplayer ) -- TEAM SETUP
 	--for teams in pairs(teams) do print(k) end
+	local killplayer = killplayer or false
     if ( not teams[n] ) then return end
 if (n <= 2) then
     self:SetObserverMode(OBS_MODE_NONE) -- turn off spectator mode(IF ON)
     self:UnSpectate(OBS_MODE_NONE)
     self:SetTeam( n ) -- set the team to N
-	if (self:Alive()) then -- if the player is alive, then kill him
+	if (killplayer and self:Alive()) then -- if the player is alive, then kill him
 		self:Kill()
 	end
     self:Give("weapon_knife") -- give the player a knife
@@ -45,12 +47,44 @@ if (n <= 2) then
   end
 end
 
+function ply:SwitchTeam(n, --[[optional]]killplayer)
+	-- run checks to make sure that the other team is not full.
+
+end
+
+function GetAll()
+	return #player.GetAll()
+end
+
 hook.Add("PlayerShouldTakeDamage", "AntiTeamKill", function(ply, attack)
 	if(attack:IsPlayer()) then
 		if(ply:Team() == attack:Team()) then
 			--add code here to let the attacker know you are on the same team, maybe a css voice command
 			attack:ChatPrint("Hey That's your teammate!") -- print to chat
 			return false
+		end
+	end
+end)
+
+hook.Add("PlayerSpawn", "BalanceTeam", function (ply)
+	local playerbase = FindMetaTable("Player")
+
+	print(GetAll())
+	if(GetAll() > 1) then
+		print(string.format("team 1 : %d, team 2: %d", team.NumPlayers(1), team.NumPlayers(2)))
+		if(ply:Team() == 1 and team.NumPlayers(1) > team.NumPlayers(2)) then -- check if ct > t, if so switch
+			//ply:Kill()
+			ply:SetupTeam(2, false)
+			ply:ChatPrint(string.format("You've been autobalanced on to the %s side", teams[2].name))
+		-- end
+		elseif (ply:Team() == 2 and team.NumPlayers(1) < team.NumPlayers(2)) then -- check if t > ct
+			//ply:Kill()
+			ply:SetupTeam(1, false)
+			ply:ChatPrint(string.format("You've been autobalanced on to the %s side", teams[1].name))
+		-- end
+		-- else
+		-- 	ply:SetupTeam(math.random(2, 1), false)
+		-- 	print("Randomizing Team...")
 		end
 	end
 end)

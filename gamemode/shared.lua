@@ -23,7 +23,7 @@ end)
 concommand.Add("teamsTest", function( ply, cmd, args)  -- teamstest prints out all of the teams
   for team in pairs(teams) do print(teams[team].spawnpoint) end
   local team = pairs(teams)
-  print(team[0])
+  print(teams[ply:Team()].name)
 end)
 
 concommand.Add("changeTeam",  function( ply, cmd, args) -- randomly changes the team
@@ -31,7 +31,7 @@ concommand.Add("changeTeam",  function( ply, cmd, args) -- randomly changes the 
 end)
 concommand.Add("spawn",  function( ply, cmd, args) -- forces a player respawn without death
   ply:Spawn()
-  print(ply:GetPlayerColor()) -- also prints team color
+  --print(ply:GetPlayerColor()) -- also prints team color
 end)
 
 function dump(o) -- dumps a tables content to string.
