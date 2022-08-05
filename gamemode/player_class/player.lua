@@ -5,13 +5,13 @@ teams = { -- defined teams, definitely could use more stuff but this is good eno
 		name = "CT",
 		color = Vector (0, 0 ,1.0),
 		spawnpoint = "info_player_counterterrorist",
-		weapons = {}
+		weapons = {"weapon_knife"}
 	},
 	{
 		name = "T",
 		color = Vector (1.0, 0 ,0),
 		spawnpoint = "info_player_terrorist",
-		weapons = {}
+		weapons = {"weapon_knife"}
 	},
 	{
 		name = "Spectator",
@@ -39,7 +39,8 @@ if (n <= 2) then
     self:SetWalkSpeed(180) -- css walk speed
     self:SetRunSpeed( 200 ) -- css run speed 
     self:SetModel( "models/player/Group03m/Male_0" .. math.random(1,9) .. ".mdl" ) -- we can change this based on team, and probably will.
-  end
+	self:Spawn()
+	end
   if (n == 3) then -- If they are a spectator, then please follow these stupid fucking guidelines.
     self:SetTeam(n)
     self:SetObserverMode(OBS_MODE_ROAMING)
@@ -47,9 +48,40 @@ if (n <= 2) then
   end
 end
 
-function ply:SwitchTeam(n, --[[optional]]killplayer)
-	-- run checks to make sure that the other team is not full.
 
+function ply:SwitchTeam(--[[optional]]killplayer)
+	-- run checks to make sure that the other team is not full.
+	print(string.format("team 1 : %d, team 2: %d", team.NumPlayers(1), team.NumPlayers(2)))
+	if(GetAll() > 1) then
+		-- run code if players are in the server
+		if(team.NumPlayers(1) > team.NumPlayers(2)) then -- check if ct > t, if so switch
+			//ply:Kill()
+			if(self:Team() == 2) then
+				return
+			end
+			self:SetupTeam(2, false)
+			self:ChatPrint(string.format("You are now on the %s side", teams[2].name))
+		-- end
+		elseif (team.NumPlayers(1) < team.NumPlayers(2)) then -- check if t > ct
+			//ply:Kill()
+			if(self:Team() == 1) then
+				return
+			end
+			self:SetupTeam(1, false)
+			self:ChatPrint(string.format("You are now on the %s side", teams[1].name))
+		elseif (team.NumPlayers(1) == team.NumPlayers(2)) then
+			if(self:Team() == 2 or self:Team() == 1) then
+				self:ChatPrint("The other team is full")
+				return
+			else
+				self:SetupTeam(math.random(2, 1), false)
+			end
+			return
+		end
+	else
+		-- run code if server is empty
+		self:SetupTeam(math.random(2, 1))
+	end
 end
 
 function GetAll()
@@ -69,15 +101,15 @@ end)
 hook.Add("PlayerSpawn", "BalanceTeam", function (ply)
 	local playerbase = FindMetaTable("Player")
 
-	print(GetAll())
+	
 	if(GetAll() > 1) then
 		print(string.format("team 1 : %d, team 2: %d", team.NumPlayers(1), team.NumPlayers(2)))
-		if(ply:Team() == 1 and team.NumPlayers(1) > team.NumPlayers(2)) then -- check if ct > t, if so switch
+		if(ply:Team() == 1 and team.NumPlayers(1) - 1 > team.NumPlayers(2)) then -- check if ct > t, if so switch
 			//ply:Kill()
 			ply:SetupTeam(2, false)
 			ply:ChatPrint(string.format("You've been autobalanced on to the %s side", teams[2].name))
 		-- end
-		elseif (ply:Team() == 2 and team.NumPlayers(1) < team.NumPlayers(2)) then -- check if t > ct
+		elseif (ply:Team() == 2 and team.NumPlayers(1)  < team.NumPlayers(2) - 1) then -- check if t > ct
 			//ply:Kill()
 			ply:SetupTeam(1, false)
 			ply:ChatPrint(string.format("You've been autobalanced on to the %s side", teams[1].name))
@@ -86,5 +118,11 @@ hook.Add("PlayerSpawn", "BalanceTeam", function (ply)
 		-- 	ply:SetupTeam(math.random(2, 1), false)
 		-- 	print("Randomizing Team...")
 		end
+	end
+end)
+
+hook.Add("PlayerSpawn", "GiveWeapons", function (ply)
+	for item,weapon in pairs(teams[ply:Team()].weapons) do
+		ply:Give(weapon)
 	end
 end)
