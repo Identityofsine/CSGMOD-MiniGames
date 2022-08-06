@@ -1,5 +1,5 @@
 local ply = FindMetaTable("Player")
-
+ply.prevTeam = 1
 teams = { -- defined teams, definitely could use more stuff but this is good enough
 	{
 		name = "CT",

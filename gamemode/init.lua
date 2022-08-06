@@ -31,7 +31,6 @@ function GM:PlayerInitialSpawn(ply) -- When somebody first spawns
 end
 
 
-
 function GM:PlayerSpawn(ply)
   --ply:ChatPrint(string.format("you are on team %s", teams[ply:Team()].name)) -- prints the current team the player is on
   

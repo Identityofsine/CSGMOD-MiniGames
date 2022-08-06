@@ -28,9 +28,12 @@ concommand.Add( "gay", function( ply, cmd, args)
 
 --reset map    
 concommand.Add("resetmap", function( ply, cmd, args)
-    game.CleanUpMap()
-    for item, player in pairs(player.GetAll())
-    do
-        player:Spawn()
-    end
+    Round.inProgress = true 
+    Round:End()
+end)
+
+--debug command
+concommand.Add("setspeed", function( ply, cmd, args)
+    print(args[1])
+    ply:SetRunSpeed(args[1])
 end)
