@@ -1,3 +1,9 @@
+util.AddNetworkString("roundtimer")
+util.AddNetworkString("roundend")
+-- ^ ALWAYS ADD THE NETWORK STRING BEFORE USING
+-- DO NOT DEFINE SO MANY, INSTEAD SEND MORE IN ONE PACKET
+
+
 Round = {}
 Round.length = 180
 Round.progress = Round.length
@@ -6,6 +12,21 @@ Round.timerID = "ROUNDTIMER"
 
 
 
+local function networkTimer()
+    -- update round timer for client
+    net.Start("roundtimer")
+        net.WriteInt(Round.progress, 12)
+    net.Send(player.GetAll())
+end
+
+local function SendRoundEnd(wTeam)
+    wTeam = wTeam or 0
+    --this is how you send network stuff, this in part. is letting the client know the round endedd
+    net.Start("roundend")
+        net.WriteInt(wTeam, 12)
+        net.WriteTable({})
+    net.Send(player.GetAll())
+end
 
 local function resetTimer(--[[optional]] length)
     length = length or Round.length
@@ -17,14 +38,14 @@ local function counttimer(--[[optional]] length)
     length = length or Round.length
     if(Round.progress > 0 and Round.inProgress) then
         Round.progress = Round.progress - 1
-        PrintMessage(HUD_PRINTTALK, string.format("There is %d seconds left in the round", Round.progress))
+        -- PrintMessage(HUD_PRINTTALK, string.format("There is %d seconds left in the round", Round.progress))
     elseif (Round.progress <= 0) then
-        PrintMessage(HUD_PRINTTALK, "ROUND OVER")
+        -- PrintMessage(HUD_PRINTTALK, "ROUND OVER")
         Round:End(.5)
     elseif(!Round.inProgress) then
         timer.Remove(Round.timerID)
-    
     end
+    networkTimer()
 end
 
 function Round:Start() 
@@ -46,8 +67,9 @@ function Round:Start()
     end
 end
 
-function Round:End(--[[optional]] delay)
+function Round:End(teamN, --[[optional]] delay)
     local delay = delay or 2.5
+    local teamN = teamN
     -- this should be called when every person is dead or the round timer is over.
     -- award team with points
     local function reset() 
@@ -62,7 +84,7 @@ function Round:End(--[[optional]] delay)
     end
     if(self.inProgress) then
             self.inProgress = false;
-            PrintMessage(HUD_PRINTTALK, "ROUND IS ENDING!!!")
+            SendRoundEnd(teamN)
             timer.Simple(delay, function ()
                 reset()
             end)
@@ -71,17 +93,21 @@ function Round:End(--[[optional]] delay)
     end
 end
 
-
+--player spawn
 hook.Add("PlayerInitialSpawn", "StartRoundAfterPlayerConnect", function (player)
     if(GetAll() == 2 and !Round.inProgress) then
         Round:Start()
     end
 end)
 
+--disable respawn
 hook.Add("PlayerDeathThink", "DisableRespawnDuringRound", function (ply)
-    print(Round.inProgress)
+    
     return false
 end)
+
+
+
 
 -- check player count if death, if so end round if a team is empty
 hook.Add("PlayerDeath", "CheckifRoundEnded", function(victim, inf, att)
@@ -93,8 +119,8 @@ hook.Add("PlayerDeath", "CheckifRoundEnded", function(victim, inf, att)
                 aliveplayers = aliveplayers + 1
             end
         end
-        if(aliveplayers <= 1) then
-            Round:End()
+        if(aliveplayers < 1) then
+            Round:End(1)
             return
         end
         local ctPlayerAlive = 0;
@@ -105,7 +131,7 @@ hook.Add("PlayerDeath", "CheckifRoundEnded", function(victim, inf, att)
             end
         end
         if(ctPlayerAlive < 1) then
-            Round:End()
+            Round:End(2)
             return
         end
         local tPlayerAlive = 0;
@@ -116,7 +142,7 @@ hook.Add("PlayerDeath", "CheckifRoundEnded", function(victim, inf, att)
             end
         end
         if(tPlayerAlive < 1) then
-            Round:End()
+            Round:End(1)
             return
         end
     end

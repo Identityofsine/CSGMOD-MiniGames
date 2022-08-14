@@ -11,6 +11,11 @@ function GM:Initialize()
 
 end
 
+function GetRoundTime()
+   return Round.progress
+end
+
+
 
 function dump(o) -- dumps a tables content to string.
   if type(o) == 'table' then

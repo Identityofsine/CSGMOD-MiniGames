@@ -58,7 +58,10 @@ function GM:ShouldCollide(ent1, ent2)
         return false
       end 
   end
-  
+end
+
+function GM:PlayerDeathSound(ply)
+  return true
 end
 
 -- hook.Add( "ShouldCollide", "CustomCollisions", function( ent1, ent2 )
