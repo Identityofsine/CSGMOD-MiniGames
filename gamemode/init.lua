@@ -1,5 +1,6 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
+
 include("shared.lua")
 include("player_class/player.lua")
 include("team/team.lua")
@@ -63,6 +64,8 @@ end
 function GM:PlayerDeathSound(ply)
   return true
 end
+
+
 
 -- hook.Add( "ShouldCollide", "CustomCollisions", function( ent1, ent2 )
 
