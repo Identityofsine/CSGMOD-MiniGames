@@ -99,6 +99,7 @@ hook.Add( "HUDPaint", "DRAW_AMMO", function()
 end )
 
 local avatars = {}
+
 hook.Add( "ScoreboardShow", "Scoreboard", function()
 	
 	
@@ -223,7 +224,6 @@ hook.Add( "ScoreboardShow", "Scoreboard", function()
 		drawScoreBoardPane()
 		drawPlayers()
 	end )
-	print("gay")
 	return true
 end )
 hook.Add("ScoreboardHide", "ScoreboardHide", function ()

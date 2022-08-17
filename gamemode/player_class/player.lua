@@ -33,6 +33,7 @@ teams = { -- defined teams, definitely could use more stuff but this is good eno
 
 
 
+
 function ply:SetupTeam( n,  --[[optional]]killplayer ) -- TEAM SETUP
 	--for teams in pairs(teams) do print(k) end
 	local killplayer = killplayer or false

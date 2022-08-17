@@ -34,7 +34,7 @@ end
 
 function GM:PlayerSpawn(ply)
   --ply:ChatPrint(string.format("you are on team %s", teams[ply:Team()].name)) -- prints the current team the player is on
-  
+  ply:SetupHands()
 end
 
 function GM:PlayerSelectSpawn(ply)
@@ -49,6 +49,7 @@ function GM:PlayerSelectSpawn(ply)
   print(spawnpoint) -- print it disable this when release
   return spawnpoints[random_spawn] -- return the spawnpoint to game engine.
 end
+
 
 function GM:ShouldCollide(ent1, ent2)
   print("collison!")
@@ -65,6 +66,17 @@ function GM:PlayerDeathSound(ply)
   return true
 end
 
+function GM:PlayerSetHandsModel( ply, ent )
+
+	local simplemodel = player_manager.TranslateToPlayerModelName( ply:GetModel() )
+	local info = player_manager.TranslatePlayerHands( simplemodel )
+	if ( info ) then
+		ent:SetModel( info.model )
+		ent:SetSkin( info.skin )
+		ent:SetBodyGroups( info.body )
+	end
+
+end
 
 
 -- hook.Add( "ShouldCollide", "CustomCollisions", function( ent1, ent2 )
@@ -73,3 +85,7 @@ end
 --   if ( ent1:IsPlayer() and ent2:IsPlayer() ) then return false end
 
 -- end )
+ 
+hook.add("PlayerCanJoinTeam", "gay", function (ply,team)
+    print("gay")
+end)
