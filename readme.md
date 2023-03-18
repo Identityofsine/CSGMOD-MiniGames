@@ -19,7 +19,6 @@ This project is literally made so I could
 
 ## End Goals
 
-At the end, this project should be completely functional (meaning at most should emulate counter-strike source, have an RTV system and have a round system), but I would like to take it past baseline and add simple minute features(which I haven't thought of yet). 
+This project is intended to be fully functional, with the ability to emulate Counter-Strike Source, including an RTV system and a round system. However, I'm not content with just meeting the baseline requirements and would like to incorporate additional minute features that I have yet to consider.
 
-At the end of the project their should be a server where people could join and come together to replay memories from their youth. This server will not be permanent however, I do not feel like maintaing a server, a community, and an entire gamemode. This is why it is open-source. 
-If somehow, somebody discovers this, discovers that I haven't contributed in 6 years, thinks that this is a great idea that they want to build upon. If that person is you, be my guest and please show me what you create.
+Ultimately, my goal is to create a server where individuals can come together to relive fond memories of their youth. While I'm not planning on maintaining this server indefinitely, I want to make the project open-source to encourage others to build upon it. If, in the future, someone discovers this project and decides to take it to the next level, I welcome them to do so and would be excited to see what they create.
