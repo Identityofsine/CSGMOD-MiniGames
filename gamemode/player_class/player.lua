@@ -3,6 +3,7 @@ ply.prevTeam = 1
 teams = { -- defined teams, definitely could use more stuff but this is good enough
 	{
 		name = "CT",
+		number = 3,
 		color = Vector (0, 0 ,1.0),
 		spawnpoint = "info_player_counterterrorist",
 		models = {
@@ -15,6 +16,7 @@ teams = { -- defined teams, definitely could use more stuff but this is good eno
 	},
 	{
 		name = "T",
+		number = 2,
 		color = Vector (1.0, 0 ,0),
 		spawnpoint = "info_player_terrorist",
 		models = {
@@ -37,8 +39,8 @@ teams = { -- defined teams, definitely could use more stuff but this is good eno
 function ply:SetupTeam( n,  --[[optional]]killplayer ) -- TEAM SETUP
 	--for teams in pairs(teams) do print(k) end
 	local killplayer = killplayer or false
-    if ( not teams[n] ) then return end
-if (n <= 2) then
+    if ( not teams[n - 1] ) then return end
+if (n <= 3) then
     self:SetObserverMode(OBS_MODE_NONE) -- turn off spectator mode(IF ON)
     self:UnSpectate(OBS_MODE_NONE)
     self:SetTeam( n ) -- set the team to N
@@ -46,15 +48,15 @@ if (n <= 2) then
 		self:Kill()
 	end
     self:Give("weapon_knife") -- give the player a knife
-    self:SetPlayerColor( teams[n].color ) -- set the players color based on the team
+    self:SetPlayerColor( teams[n - 1].color ) -- set the players color based on the team
     self:SetHealth(100) -- set health
     --self:SetMaxHealth(200)
     self:SetWalkSpeed(180) -- css walk speed
     self:SetRunSpeed( 200 ) -- css run speed 
-    self:SetModel(teams[n].models[math.random(#teams[n].models)]) -- we can change this based on team, and probably will.
+    self:SetModel(teams[n - 1].models[math.random(#teams[n - 1].models)]) -- we can change this based on team, and probably will.
 	self:Spawn()
 	end
-  if (n == 3) then -- If they are a spectator, then please follow these stupid fucking guidelines.
+  if (n == 4) then -- If they are a spectator, then please follow these stupid fucking guidelines.
     self:SetTeam(n)
     self:SetObserverMode(OBS_MODE_ROAMING)
     self:Spectate(OBS_MODE_ROAMING)
@@ -67,33 +69,33 @@ function ply:SwitchTeam(--[[optional]]killplayer)
 	print(string.format("team 1 : %d, team 2: %d", team.NumPlayers(1), team.NumPlayers(2)))
 	if(GetAll() > 1) then
 		-- run code if players are in the server
-		if(team.NumPlayers(1) > team.NumPlayers(2)) then -- check if ct > t, if so switch
+		if(team.NumPlayers(2) > team.NumPlayers(3)) then -- check if ct > t, if so switch
+			//ply:Kill()
+			if(self:Team() == 3) then
+				return
+			end
+			self:SetupTeam(3, false)
+			self:ChatPrint(string.format("You are now on the %s side", teams[2].name))
+		-- end
+		elseif (team.NumPlayers(2) < team.NumPlayers(3)) then -- check if t > ct
 			//ply:Kill()
 			if(self:Team() == 2) then
 				return
 			end
 			self:SetupTeam(2, false)
-			self:ChatPrint(string.format("You are now on the %s side", teams[2].name))
-		-- end
-		elseif (team.NumPlayers(1) < team.NumPlayers(2)) then -- check if t > ct
-			//ply:Kill()
-			if(self:Team() == 1) then
-				return
-			end
-			self:SetupTeam(1, false)
 			self:ChatPrint(string.format("You are now on the %s side", teams[1].name))
-		elseif (team.NumPlayers(1) == team.NumPlayers(2)) then
-			if(self:Team() == 2 or self:Team() == 1) then
+		elseif (team.NumPlayers(2) == team.NumPlayers(3)) then
+			if(self:Team() == 2 or self:Team() == 3) then
 				self:ChatPrint("The other team is full")
 				return
 			else
-				self:SetupTeam(math.random(2, 1), false)
+				self:SetupTeam(math.random(3, 2), false)
 			end
 			return
 		end
 	else
 		-- run code if server is empty
-		self:SetupTeam(math.random(2, 1))
+		self:SetupTeam(math.random(3, 2))
 	end
 end
 
@@ -132,18 +134,18 @@ end)
 
 hook.Add("PlayerSpawn", "BalanceTeam", function (ply)
 	local playerbase = FindMetaTable("Player")
-	ply:SetModel(teams[ply:Team()].models[math.random(#teams[ply:Team()].models)]) -- we can change this based on team, and probably will.
+	ply:SetModel(teams[ply:Team() - 1].models[math.random(#teams[ply:Team() - 1].models)]) -- we can change this based on team, and probably will.
 	
 	if(GetAll() > 1) then
-		print(string.format("team 1 : %d, team 2: %d", team.NumPlayers(1), team.NumPlayers(2)))
-		if(ply:Team() == 1 and team.NumPlayers(1) - 1 > team.NumPlayers(2)) then -- check if ct > t, if so switch
+		print(string.format("team 1 : %d, team 2: %d", team.NumPlayers(2), team.NumPlayers(3)))
+		if(ply:Team() == 2 and team.NumPlayers(2) - 1 > team.NumPlayers(3)) then -- check if ct > t, if so switch
 			//ply:Kill()
-			ply:SetupTeam(2, false)
+			ply:SetupTeam(3, false)
 			ply:ChatPrint(string.format("You've been autobalanced on to the %s side", teams[2].name))
 		-- end
-		elseif (ply:Team() == 2 and team.NumPlayers(1)  < team.NumPlayers(2) - 1) then -- check if t > ct
+		elseif (ply:Team() == 3 and team.NumPlayers(3)  < team.NumPlayers(2) - 1) then -- check if t > ct
 			//ply:Kill()
-			ply:SetupTeam(1, false)
+			ply:SetupTeam(2, false)
 			ply:ChatPrint(string.format("You've been autobalanced on to the %s side", teams[1].name))
 		-- end
 		-- else
@@ -154,7 +156,7 @@ hook.Add("PlayerSpawn", "BalanceTeam", function (ply)
 end)
 
 hook.Add("PlayerSpawn", "GiveWeapons", function (ply)
-	for item,weapon in pairs(teams[ply:Team()].weapons) do
+	for item,weapon in pairs(teams[ply:Team() - 1].weapons) do
 		ply:Give(weapon)
 	end
 end)

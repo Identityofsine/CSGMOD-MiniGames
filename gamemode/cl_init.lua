@@ -182,7 +182,7 @@ hook.Add( "ScoreboardShow", "Scoreboard", function()
 			local function playerCard(player, i)
 				local pCWidth, pCHeight = width / 2 - 30, 28;
 				local discrepency = (yaxis - 20+ (30 * (i)))
-				if(player:Team() == 1) then
+				if(player:Team() == 2) then
 					local color = player:Alive() and Color(172, 197, 248, 255) or Color(172, 197, 248, 100) 
 					if(player == LocalPlayer()) then
 						surface.SetDrawColor(227, 163, 38, 255)
@@ -192,7 +192,7 @@ hook.Add( "ScoreboardShow", "Scoreboard", function()
 					draw.SimpleText(player:Frags(), "scoreboard-text", xaxis + 525, discrepency, color, TEXT_ALIGN_LEFT)
 					draw.SimpleText(player:Deaths(), "scoreboard-text", xaxis + 575, discrepency, color, TEXT_ALIGN_LEFT)
 					draw.SimpleText(player:Ping(), "scoreboard-text", xaxis + 625, discrepency, color, TEXT_ALIGN_LEFT)
-				elseif (player:Team() == 2) then
+				elseif (player:Team() == 3) then
 					local color = player:Alive() and Color(206, 103, 100, 255) or Color(206, 103, 100, 100)
 					local gap = width / 2 - 25
 					if(player == LocalPlayer()) then
@@ -209,10 +209,10 @@ hook.Add( "ScoreboardShow", "Scoreboard", function()
 			local cti, ti = 0,0
 			for ply in ipairs(players)
 			do 
-				if(players[ply]:Team() == 1) then
+				if(players[ply]:Team() == 2) then
 					cti = cti + 1
 					playerCard(players[ply], cti)
-				elseif(players[ply]:Team() == 2) then
+				elseif(players[ply]:Team() == 3) then
 					ti = ti + 1
 					playerCard(players[ply], ti)
 				end

@@ -29,6 +29,7 @@ function GM:PlayerInitialSpawn(ply) -- When somebody first spawns
   print("Player "..ply:Name().." has spawned.")
   ply:SwitchTeam(false) -- sets the team || change this to switch team...
   ply:SetNoCollideWithTeammates(true)
+  ply:SetCustomCollisionCheck(true)
 end
 
 
@@ -41,7 +42,7 @@ function GM:PlayerSelectSpawn(ply)
   local spawnpoint = "info_player_counterterrorist" -- local var uninit because of spawnpoint ass.
   for team in pairs(teams) do 
     if (team == ply:Team()) then
-       spawnpoint = teams[team].spawnpoint -- for loop through a table, if the player's team has a match return the corresponding spawnpoint
+       spawnpoint = teams[team - 1].spawnpoint -- for loop through a table, if the player's team has a match return the corresponding spawnpoint
     end
   end
   local spawnpoints = ents.FindByClass(spawnpoint) -- very useful for finding hammer ENTS
@@ -51,16 +52,19 @@ function GM:PlayerSelectSpawn(ply)
 end
 
 
-function GM:ShouldCollide(ent1, ent2)
-  print("collison!")
-  if(ent1:IsPlayer() and ent2:IsPlayer()) then
-      if(ent1:Team() == ent2:Team()) then
-        return false 
-      else
-        return false
-      end 
-  end
-end
+-- function GM:ShouldCollide(ent1, ent2)
+--   if(ent1:IsPlayer() and ent2:IsPlayer()) then
+--       if(ent1:Team() == ent2:Team()) then
+--         return false 
+--       else
+--         return false
+--       end 
+--   end
+-- end
+
+
+
+
 
 function GM:PlayerDeathSound(ply)
   return true
