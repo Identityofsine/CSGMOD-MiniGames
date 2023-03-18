@@ -2,9 +2,11 @@
 This project is created for fun.
 
 ## What is this project for?
-What this project aims to do is to translate the experience, mechanics, and gameplay of Counter-Strike Source Minigames(or otherwise known as mg_*.bsp maps) into Garry's Mod, where the possiblites are endless. 
+This project seeks to bring the exciting experience, intricate mechanics, and engaging gameplay of Counter-Strike Source Minigames, commonly known as mg_*.bsp maps, to Garry's Mod, where the creative possibilities are limitless.
 
-The goal is to first emulate the gameplay of counter-strike: Rounds, Weapons, Maps, and Models, then to add our own twist into the game. With CSS it is hard to create modifications to the game(compared to GMod), in our vision we want to enhance the experience rather then change it.
+Our primary objective is to replicate the core gameplay of Counter-Strike, including the various rounds, weapons, maps, and models, before introducing our unique twist to the game. While modifying Counter-Strike Source can be challenging, we aim to elevate the experience by enhancing the existing gameplay without fundamentally altering it.
+
+In essence, this project represents our passion for gaming and our desire to create an immersive and enjoyable gaming experience for others who share our enthusiasm.
 
 This project is literally made so I could 
 - Code Something
